@@ -1,0 +1,48 @@
+{
+  "welcome": "Welcome Back!",
+  "login_info": "To keep connected with us please login with your personal info",
+  "sign_up": "Sign Up",
+  "sign_in": "Sign In",
+  "create_account": "Create Account",
+  "forgot_password": "Forgot password",
+  "hello_friend": "Hello friend",
+  "delete_task": "delete",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "email": "Email",
+  "password": "Password",
+  "or_use_email": "or use your email for registration",
+  "enter_details": "Please enter your personal details",
+  "This page does not exist": "This page does not exist",
+  "no_tasks": "No tasks",
+  "close_tasklist": "close",
+  "task_title" : "Title",
+  "task_text": "Text",
+  "add_task" : "Add",
+
+  "calendar": {
+    "days": {
+      "Mon": "Mon",
+      "Tue": "Tue",
+      "Wed": "Wed",
+      "Thu": "Thu",
+      "Fri": "Fri",
+      "Sat": "Sat",
+      "Sun": "Sun"
+    },
+    "monthNames": {
+      "January": "January",
+      "February": "February",
+      "March": "March",
+      "April": "April",
+      "May": "May",
+      "June": "June",
+      "July": "July",
+      "August": "August",
+      "September": "September",
+      "October": "October",
+      "November": "November",
+      "December": "December"
+    }
+  }
+}

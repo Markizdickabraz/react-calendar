@@ -10,7 +10,6 @@ const signUpMutation = (formData) => {
                 }
             ) {
                 customer {
-                    id
                     firstname
                     lastname
                     email
