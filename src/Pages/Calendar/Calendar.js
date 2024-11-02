@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import TodoList from "../../components/TodoList/TodoList";
+import TodoList from '../../components/TodoList/TodoList';
+import { getTodos, selectTodos } from '../../redux/slice/todosSlice';
 
 const Calendar = () => {
     const { t, i18n } = useTranslation();
-    const [todos, setTodos] = useState([]);
+    const dispatch = useDispatch();
+
+    const todos = useSelector(selectTodos);
     const [todosListVisible, setTodosListVisible] = useState(false);
     const [selectedDayTodos, setSelectedDayTodos] = useState([]);
     const data = new Date();
@@ -14,45 +18,34 @@ const Calendar = () => {
 
     const firstDay = new Date(year, month, 1);
     const startingDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-
     const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-
     const days = [];
 
-    // Функція для форматування дати
     const formatDate = (day) => {
-        return `${String(day).padStart(2, '0')}.${String(month + 1).padStart(2, '0')}.${year}`;
+        return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     };
 
-    const convertDateFormat = (dateString) => {
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}.${month}.${year}`;
-    };
+    // const convertDateFormat = (dateString) => {
+    //     const date = new Date(dateString);
+    //     const day = String(date.getDate()).padStart(2, '0');
+    //     const month = String(date.getMonth() + 1).padStart(2, '0');
+    //     const year = date.getFullYear();
+    //     return `${day}.${month}.${year}`;
+    // };
 
     useEffect(() => {
-        const savedTodos = localStorage.getItem('customerTodos');
-        if (savedTodos) {
-            const parsedTodos = JSON.parse(savedTodos);
-            // Форматування дати для кожного туду
-            const formattedTodos = parsedTodos.map(todo => ({
-                ...todo,
-                date: convertDateFormat(todo.date),
-            }));
-            setTodos(formattedTodos);
-        }
-    }, []);
+        dispatch(getTodos());
+    }, [dispatch]);
 
     const isTaskScheduledForDay = (day) => {
         const formattedDate = formatDate(day);
-        return todos.some(todo => todo.date === formattedDate);
+        return todos.some(todo => todo.date.slice(0, 10) === formattedDate);
     };
 
     const handleDayClick = (day) => {
         const formattedDate = formatDate(day);
-        const tasksForSelectedDay = todos.filter(todo => todo.date === formattedDate);
+        console.log(formattedDate);
+        const tasksForSelectedDay = todos.filter(todo => todo.date.slice(0, 10) === formattedDate);
         setSelectedDayTodos(tasksForSelectedDay);
         setTodosListVisible(true);
     };
@@ -83,7 +76,7 @@ const Calendar = () => {
                     {day}
                     {isTaskScheduledForDay(day) && (
                         <span
-                            className="absolute w-2.5 h-2.5 rounded-full bg-green-600 top-3 right-1 transform -translate-x-1/2 -translate-y-1/2"></span>
+                            className="absolute w-2.5 h-2.5 rounded-full bg-red-600 top-3 right-1 transform -translate-x-1/2 -translate-y-1/2"></span>
                     )}
                 </button>
             </td>

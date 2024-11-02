@@ -1,20 +1,22 @@
-import React from "react";
-import useLogout from "../../hooks/useLogout/useLogout";
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/slice/userSlice';
+import { useNavigate } from 'react-router-dom';
 
-const Logout = () => {
-    const { fetchLogout } = useLogout();
+const LogoutButton = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const handleLogout = () => {
-        fetchLogout();
+    const handleLogout = (e) => {
+        e.preventDefault();
+        dispatch(logout());
+        navigate('/');
     };
 
     return (
-        <div>
-            <button className='absolute top-20 left-6' type="button" onClick={handleLogout}>
-                X
-            </button>
-        </div>
+        <button className='absolute top-24 left-4' onClick={handleLogout}>
+            Logout
+        </button>
     );
 };
 
-export default Logout;
+export default LogoutButton;

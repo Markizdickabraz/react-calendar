@@ -3,10 +3,7 @@ import { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import useSignUp from '../../hooks/useSignUp/useSignUp';
 import useSignIn from '../../hooks/useSignIn/useSignIn';
-import { FaRegEyeSlash } from "react-icons/fa";
-import { FaRegEye } from "react-icons/fa";
-
-
+import { FaRegEyeSlash, FaRegEye } from 'react-icons/fa';
 
 const Auth = () => {
     const [signIn, setSignIn] = useState(false);
@@ -65,8 +62,8 @@ const Auth = () => {
                             />
                             <button className='bg-transparent absolute border-none left-[84%] top-4 p-3 ' type="button"
                                     onClick={togglePasswordVisibility}>
-                                {showPassword ? <FaRegEyeSlash className='text-black'/>
-                                    : <FaRegEye className='text-black'/>}
+                                {showPassword ? <FaRegEyeSlash className='text-black' />
+                                    : <FaRegEye className='text-black' />}
                             </button>
                         </div>
                         <button type="submit">{t('sign_up')}</button>
@@ -93,8 +90,8 @@ const Auth = () => {
                             />
                             <button className='bg-transparent absolute border-none left-[84%] top-4 p-3 ' type="button"
                                     onClick={togglePasswordVisibility}>
-                                {showPassword ? <FaRegEyeSlash className='text-black'/>
-                                    : <FaRegEye className='text-black'/>}
+                                {showPassword ? <FaRegEyeSlash className='text-black' />
+                                    : <FaRegEye className='text-black' />}
                             </button>
                         </div>
                         <a href="/">{t('forgot_password')}</a>
@@ -102,7 +99,7 @@ const Auth = () => {
                     </form>
                 </div>
                 <div className="overlay-container">
-                <div className="overlay">
+                    <div className="overlay">
                         <div className="overlay-panel overlay-left">
                             <h2>{t('welcome')}</h2>
                             <p>{t('login_info')}</p>

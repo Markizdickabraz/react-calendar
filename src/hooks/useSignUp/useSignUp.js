@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import signUpMutation from './signUp.gql';
 import signInMutation from '../useSignIn/signIn.gql';
-import useGetTodos from '../useGetTodos/useGetTodos';
+import { getTodos } from '../../redux/slice/todosSlice';
 
 const useSignUp = () => {
     const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const useSignUp = () => {
     });
     const [token, setToken] = useState(null);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,6 +62,9 @@ const useSignUp = () => {
                     const token = signInData.data.generateCustomerToken.token;
                     localStorage.setItem('customerToken', token);
                     setToken(token);
+
+                    // Dispatch getTodos action with the token
+                    dispatch(getTodos(token));
                 }
             }
         } catch (error) {
@@ -67,21 +72,16 @@ const useSignUp = () => {
         }
     };
 
-    const { todos, loading, error } = useGetTodos(token);
-
     useEffect(() => {
-        if (token && !loading && !error) {
+        if (token) {
             navigate('/calendar');
         }
-    }, [token, loading, error, navigate]);
+    }, [token, navigate]);
 
     return {
         formData,
         handleChange,
-        handleSignUpSubmit,
-        todos,
-        loading,
-        error
+        handleSignUpSubmit
     };
 };
 

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import useAddTodo from '../../hooks/useAddTodos/useAddTodos';
+import { addTodo} from '../../redux/slice/todosSlice';
 
 const AddTaskForm = ({ onClose }) => {
     const { t } = useTranslation();
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
-    const { fetchAddTodo } = useAddTodo();
+    const dispatch = useDispatch();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (title.trim() === '' || text.trim() === '') {
@@ -22,15 +23,17 @@ const AddTaskForm = ({ onClose }) => {
             date: new Date().toISOString().split('T')[0],
         };
 
-        const result = await fetchAddTodo(newTask);
-
-        if (result) {
-            alert(t('task_added_successfully'));
-        }
-
-        setTitle('');
-        setText('');
-        onClose();
+        dispatch(addTodo(newTask))
+            .unwrap()
+            .then(() => {
+                alert(t('task_added_successfully'));
+                setTitle('');
+                setText('');
+                onClose();
+            })
+            .catch((error) => {
+                alert(error.message);
+            });
     };
 
     return (
@@ -70,7 +73,7 @@ const AddTaskForm = ({ onClose }) => {
                     <div className='flex justify-between'>
                         <button
                             type='submit'
-                            className='px-4 py-2 bg-red text-white rounded hover:bg-red-600'
+                            className={`px-4 py-2 text-white rounded hover:bg-red-600`}
                         >
                             {t('add_task')}
                         </button>
