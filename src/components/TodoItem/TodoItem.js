@@ -1,13 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import useDeleteTodo from "../../hooks/useRemoveTodo/useRemoveTodo";
+import { useDispatch } from 'react-redux';
+import { deleteTodo } from "../../redux/slice/todosSlice";
 
 const TodoItem = ({ todo, onToggleStatus }) => {
     const { t } = useTranslation();
-    const { fetchDeleteTodo } = useDeleteTodo();
+    const dispatch = useDispatch();
 
     const handleDelete = () => {
-            fetchDeleteTodo(todo.id);
+        dispatch(deleteTodo(todo.id));
     };
 
     const itemClass = todo.status === 'complete' ? 'complete' : '';

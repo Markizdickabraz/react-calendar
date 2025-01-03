@@ -19,6 +19,8 @@
   "task_title": "Заголовок",
   "task_text" : "Текст",
   "add_task": "Додати",
+  "add_new_task": "Створити нове завдання",
+
 
   "calendar": {
     "days": {

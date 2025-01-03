@@ -19,6 +19,7 @@
   "task_title" : "Title",
   "task_text": "Text",
   "add_task" : "Add",
+  "add_new_task": "Create new task",
 
   "calendar": {
     "days": {

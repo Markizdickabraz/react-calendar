@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import TodoItem from '../TodoItem/TodoItem';
 import AddTaskForm from '../AddTaskForm/AddTaskForm';
+import { useSelector} from "react-redux";
+import { selectTodos} from "../../redux/slice/todosSlice";
 
-const TodoList = ({ todos, onClose }) => {
+const TodoList = ({ onClose }) => {
     const { t } = useTranslation();
     const [isOpenTaskForm, setIsOpenTaskForm] = useState(false);
+    const todos = useSelector(selectTodos);
     const [todoList, setTodoList] = useState(todos);
+
+    useEffect(() => {
+         setTodoList(todos)
+    }, [todos]);
+
 
     const handleToggleStatus = (taskId) => {
         setTodoList((prevTodos) =>
@@ -22,7 +30,6 @@ const TodoList = ({ todos, onClose }) => {
         setTodoList([...todoList, newTask]);
     };
 
-    // Відкриття форми додавання завдання
     const openAddTaskForm = () => {
         setIsOpenTaskForm(true);
     };

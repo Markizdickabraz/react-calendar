@@ -10,7 +10,7 @@ const Calendar = () => {
 
     const todos = useSelector(selectTodos);
     const [todosListVisible, setTodosListVisible] = useState(false);
-    const [selectedDayTodos, setSelectedDayTodos] = useState([]);
+    // const [selectedDayTodos, setSelectedDayTodos] = useState([]);
     const data = new Date();
     const month = data.getMonth();
     const year = data.getFullYear();
@@ -25,6 +25,7 @@ const Calendar = () => {
         return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     };
 
+    // TODO formated date ???
     // const convertDateFormat = (dateString) => {
     //     const date = new Date(dateString);
     //     const day = String(date.getDate()).padStart(2, '0');
@@ -44,9 +45,9 @@ const Calendar = () => {
 
     const handleDayClick = (day) => {
         const formattedDate = formatDate(day);
-        console.log(formattedDate);
-        const tasksForSelectedDay = todos.filter(todo => todo.date.slice(0, 10) === formattedDate);
-        setSelectedDayTodos(tasksForSelectedDay);
+        // TODO TASKLIST PER DAY
+        // const tasksForSelectedDay = todos.filter(todo => todo.date.slice(0, 10) === formattedDate);
+        // setSelectedDayTodos(tasksForSelectedDay);
         setTodosListVisible(true);
     };
 
@@ -124,7 +125,11 @@ const Calendar = () => {
             </div>
 
             {todosListVisible && (
-                <TodoList todos={selectedDayTodos} onClose={handleCloseTodoList} />
+                <TodoList onClose={handleCloseTodoList} />
+
+                // TODO SELECTED TASK DAY ???
+                // <TodoList todos={selectedDayTodos} onClose={handleCloseTodoList} />
+
             )}
         </div>
     );

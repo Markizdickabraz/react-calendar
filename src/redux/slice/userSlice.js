@@ -10,7 +10,7 @@ export const signUp = createAsyncThunk(
         const query = signUpMutation(formData);
 
         try {
-            const response = await fetch('https://app.test.test/graphql', {
+            const response = await fetch('https://app.first-roadmap.test/graphql', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export const signIn = createAsyncThunk(
         const { query, variables } = signInMutation({ email, password });
 
         try {
-            const response = await fetch('https://app.test.test/graphql', {
+            const response = await fetch('https://app.first-roadmap.test/graphql', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export const logout = createAsyncThunk(
         const query = logoutMutation();
 
         try {
-            const response = await fetch('https://app.test.test/graphql', {
+            const response = await fetch('https://app.first-roadmap.test/graphql', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

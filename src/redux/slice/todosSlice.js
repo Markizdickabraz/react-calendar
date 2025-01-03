@@ -1,17 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import getTodosQuery from '../../hooks/useGetTodos/getTodos.gql';
 import addTodoMutation from '../../hooks/useAddTodos/addTodos.gql';
+import deleteTodoMutation from "../../hooks/useRemoveTodo/removeTodo.gql";
 
-export const getTodos = createAsyncThunk('todos/getTodos', async (_, { getState }) => {
+export const getTodos = createAsyncThunk('todos/getTodos', async (_, {getState}) => {
     const token = localStorage.getItem('customerToken');
     if (!token) return [];
-    const response = await fetch('https://app.test.test/graphql', {
+    const response = await fetch('https://app.first-roadmap.test/graphql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ query: getTodosQuery }),
+        body: JSON.stringify({query: getTodosQuery}),
     });
 
     const data = await response.json();
@@ -23,12 +24,38 @@ export const getTodos = createAsyncThunk('todos/getTodos', async (_, { getState 
     return data.data.getCustomerTodos;
 });
 
-export const addTodo = createAsyncThunk('todos/addTodo', async (todoData, { getState }) => {
+export const deleteTodo = createAsyncThunk('todos/deleteTodo', async (taskId, {getState}) => {
+    const token = localStorage.getItem('customerToken');
+    if (!token) throw new Error('Authentication required.');
+
+    const response = await fetch('https://app.first-roadmap.test/graphql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            query: deleteTodoMutation(),
+            variables: {taskId}
+        })
+    });
+
+    const result = await response.json();
+
+    if (response.ok && !result.errors) {
+        return {taskId};
+    } else {
+        throw new Error(result.errors ? result.errors.map(err => err.message).join(', ') : 'Failed to delete task');
+    }
+});
+
+
+export const addTodo = createAsyncThunk('todos/addTodo', async (todoData, {getState}) => {
     const token = localStorage.getItem('customerToken');
 
     if (!token) throw new Error('Authentication required.');
 
-    const response = await fetch('https://app.test.test/graphql', {
+    const response = await fetch('https://app.first-roadmap.test/graphql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -36,7 +63,7 @@ export const addTodo = createAsyncThunk('todos/addTodo', async (todoData, { getS
         },
         body: JSON.stringify({
             query: addTodoMutation(),
-            variables: { input: todoData }
+            variables: {input: todoData}
         })
     });
 
@@ -78,8 +105,21 @@ const todosSlice = createSlice({
             .addCase(addTodo.fulfilled, (state, action) => {
                 state.loading = false;
                 state.todos.push(action.payload);
+                localStorage.setItem('customerTodos', JSON.stringify(state.todos));
             })
             .addCase(addTodo.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(deleteTodo.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(deleteTodo.fulfilled, (state, action) => {
+                state.loading = false;
+                state.todos = state.todos.filter(todo => todo.id !== action.payload.taskId);
+                localStorage.setItem('customerTodos', JSON.stringify(state.todos));
+            })
+            .addCase(deleteTodo.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

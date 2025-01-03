@@ -26,7 +26,6 @@ const AddTaskForm = ({ onClose }) => {
         dispatch(addTodo(newTask))
             .unwrap()
             .then(() => {
-                alert(t('task_added_successfully'));
                 setTitle('');
                 setText('');
                 onClose();

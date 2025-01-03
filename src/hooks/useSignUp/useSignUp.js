@@ -26,7 +26,7 @@ const useSignUp = () => {
         const query = signUpMutation(formData);
 
         try {
-            const response = await fetch('https://app.test.test/graphql', {
+            const response = await fetch('https://app.first-roadmap.test/graphql', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ const useSignUp = () => {
                     password: formData.password
                 });
 
-                const signInResponse = await fetch('https://app.test.test/graphql', {
+                const signInResponse = await fetch('https://app.first-roadmap.test/graphql', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
