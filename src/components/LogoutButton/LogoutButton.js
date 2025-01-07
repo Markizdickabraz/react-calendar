@@ -1,14 +1,13 @@
-import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/slice/userSlice';
-import { useNavigate } from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import {logout} from '../../redux/slice/userSlice';
+import {useNavigate} from 'react-router-dom';
 
 const LogoutButton = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleLogout = (e) => {
-        e.preventDefault();
-        dispatch(logout());
+    const handleLogout = async () => {
+        await dispatch(logout());
         navigate('/');
     };
 

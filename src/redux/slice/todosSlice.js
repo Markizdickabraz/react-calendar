@@ -2,6 +2,7 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import getTodosQuery from '../../hooks/useGetTodos/getTodos.gql';
 import addTodoMutation from '../../hooks/useAddTodos/addTodos.gql';
 import deleteTodoMutation from "../../hooks/useRemoveTodo/removeTodo.gql";
+import toast from 'react-hot-toast';
 
 export const getTodos = createAsyncThunk('todos/getTodos', async (_, {getState}) => {
     const token = localStorage.getItem('customerToken');
@@ -92,24 +93,29 @@ const todosSlice = createSlice({
             .addCase(getTodos.fulfilled, (state, action) => {
                 state.loading = false;
                 state.todos = action.payload;
+                toast.success('Get tasks successful!');
                 localStorage.setItem('customerTodos', JSON.stringify(action.payload));
             })
             .addCase(getTodos.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+                toast.success('Get tasks failed!');
             })
 
             .addCase(addTodo.pending, (state) => {
                 state.loading = true;
             })
             .addCase(addTodo.fulfilled, (state, action) => {
+                console.log('123123')
                 state.loading = false;
                 state.todos.push(action.payload);
+                toast.success('Create new task!');
                 localStorage.setItem('customerTodos', JSON.stringify(state.todos));
             })
             .addCase(addTodo.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+                toast.success('Create new task failed!');
             })
             .addCase(deleteTodo.pending, (state) => {
                 state.loading = true;
@@ -117,10 +123,12 @@ const todosSlice = createSlice({
             .addCase(deleteTodo.fulfilled, (state, action) => {
                 state.loading = false;
                 state.todos = state.todos.filter(todo => todo.id !== action.payload.taskId);
+                toast.success('Remove task!');
                 localStorage.setItem('customerTodos', JSON.stringify(state.todos));
             })
             .addCase(deleteTodo.rejected, (state, action) => {
                 state.loading = false;
+                toast.success('Remove task failed!');
                 state.error = action.error.message;
             });
     },

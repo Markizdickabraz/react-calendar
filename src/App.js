@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import Auth from './Pages/Auth/Auth';
 import Calendar from "./Pages/Calendar/Calendar";
 import NotFound from "./Pages/NotFound/NotFound";
-import LogoutButton from "./components/LogoutButton/LogoutButton";
 
 
 const App = () => {
@@ -24,7 +23,7 @@ const App = () => {
                 <button onClick={() => changeLanguage('en')}>En</button>
                 <button onClick={() => changeLanguage('uk')}>Укр</button>
             </div>
-            <LogoutButton />
+
             <Routes>
                 <Route path='/' element={<Auth />} />
                 <Route path='/calendar' element={<Calendar />} />

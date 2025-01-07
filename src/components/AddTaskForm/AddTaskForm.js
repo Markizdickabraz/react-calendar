@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { addTodo} from '../../redux/slice/todosSlice';
+import { nanoid } from 'nanoid';
 
-const AddTaskForm = ({ onClose }) => {
+const AddTaskForm = ({onAddTask, onClose, date }) => {
     const { t } = useTranslation();
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const dispatch = useDispatch();
+    const id= nanoid();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -20,8 +22,10 @@ const AddTaskForm = ({ onClose }) => {
         const newTask = {
             title,
             text,
-            date: new Date().toISOString().split('T')[0],
+            id,
+            date,
         };
+        onAddTask(newTask);
 
         dispatch(addTodo(newTask))
             .unwrap()

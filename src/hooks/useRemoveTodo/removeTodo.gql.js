@@ -1,6 +1,6 @@
 const deleteTodoMutation = () => {
     return `
-        mutation deleteTask($taskId: Int!) {
+        mutation deleteTask($taskId: String!) {
         deleteTask(taskId: $taskId) {
             success
             message

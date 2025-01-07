@@ -1,16 +1,27 @@
 import './Auth.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import useSignUp from '../../hooks/useSignUp/useSignUp';
 import useSignIn from '../../hooks/useSignIn/useSignIn';
 import { FaRegEyeSlash, FaRegEye } from 'react-icons/fa';
+import {Toaster} from "react-hot-toast";
 
 const Auth = () => {
     const [signIn, setSignIn] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
     const { t } = useTranslation();
     const { formData: signUpFormData, handleChange: handleSignUpChange, handleSignUpSubmit } = useSignUp();
     const { formData: signInFormData, handleChange: handleSignInChange, handleSignInSubmit } = useSignIn();
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobileView(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleSignUpClick = () => {
         setSignIn(true);
@@ -27,6 +38,13 @@ const Auth = () => {
     return (
         <div className='flex justify-center items-center h-screen'>
             <div className={`container ${signIn ? 'right-panel-active' : ''}`} id="container">
+                {isMobileView && (
+                    <button
+                        onClick={signIn ? handleSignInClick : handleSignUpClick}
+                        className="toggle-auth-btn">
+                        {signIn ? t('sign_in') : t('sign_up')}
+                    </button>
+                )}
                 <div className="form-container sign-up-container">
                     <form onSubmit={handleSignUpSubmit}>
                         <h2>{t('create_account')}</h2>
@@ -98,31 +116,34 @@ const Auth = () => {
                         <button type="submit">{t('sign_in')}</button>
                     </form>
                 </div>
-                <div className="overlay-container">
-                    <div className="overlay">
-                        <div className="overlay-panel overlay-left">
-                            <h2>{t('welcome')}</h2>
-                            <p>{t('login_info')}</p>
-                            <button
-                                onClick={handleSignInClick}
-                                className="ghost"
-                                id="signIn">
-                                {t('sign_in')}
-                            </button>
-                        </div>
-                        <div className="overlay-panel overlay-right">
-                            <h2>{t('hello_friend')}</h2>
-                            <p>{t('enter_details')}</p>
-                            <button
-                                onClick={handleSignUpClick}
-                                className="ghost"
-                                id="signUp">
-                                {t('sign_up')}
-                            </button>
+                {!isMobileView && (
+                    <div className="overlay-container">
+                        <div className="overlay">
+                            <div className="overlay-panel overlay-left">
+                                <h2>{t('welcome')}</h2>
+                                <p>{t('login_info')}</p>
+                                <button
+                                    onClick={handleSignInClick}
+                                    className="ghost"
+                                    id="signIn">
+                                    {t('sign_in')}
+                                </button>
+                            </div>
+                            <div className="overlay-panel overlay-right">
+                                <h2>{t('hello_friend')}</h2>
+                                <p>{t('enter_details')}</p>
+                                <button
+                                    onClick={handleSignUpClick}
+                                    className="ghost"
+                                    id="signUp">
+                                    {t('sign_up')}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
+            <Toaster />
         </div>
     );
 }

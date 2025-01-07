@@ -1,23 +1,25 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { deleteTodo } from "../../redux/slice/todosSlice";
+import {useTranslation} from 'react-i18next';
+import {useDispatch} from 'react-redux';
+import {deleteTodo} from "../../redux/slice/todosSlice";
 
-const TodoItem = ({ todo, onToggleStatus }) => {
-    const { t } = useTranslation();
+const TodoItem = ({todo, onToggleStatus}) => {
+    const {t} = useTranslation();
     const dispatch = useDispatch();
 
-    const handleDelete = () => {
+    const handleDelete = (e) => {
+        // e.preventDefault();
+        // e.stopPropagation();
         dispatch(deleteTodo(todo.id));
     };
 
-    const itemClass = todo.status === 'complete' ? 'complete' : '';
+    // const itemClass = todo.status === 'complete' ? 'relative before:content-[""] before:w-full before:absolute before:top-1/2 before:h-0.5 before:bg-black' : '';
 
     return (
         <li
             id={todo.id}
-            className={`relative flex items-center border-b pb-2 w-full cursor-pointer transition-all duration-300 ${itemClass}`}
-            onClick={() => onToggleStatus(todo.id)}
+            className={`relative flex items-center border-b pb-2 w-full cursor-pointer transition-all duration-300`}
+            // onClick={() => onToggleStatus(todo.id)}
         >
             {/* Номер завдання */}
             <p className='p-0 m-0 w-10 text-left pr-4'>{todo.number}</p>

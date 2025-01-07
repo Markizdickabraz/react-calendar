@@ -1,42 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import TodoList from '../../components/TodoList/TodoList';
 import { getTodos, selectTodos } from '../../redux/slice/todosSlice';
+import LogoutButton from "../../components/LogoutButton/LogoutButton";
+import { Toaster } from "react-hot-toast";
 
 const Calendar = () => {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
 
-    const todos = useSelector(selectTodos);
+    const todos = useSelector(selectTodos, shallowEqual);
     const [todosListVisible, setTodosListVisible] = useState(false);
-    // const [selectedDayTodos, setSelectedDayTodos] = useState([]);
-    const data = new Date();
-    const month = data.getMonth();
-    const year = data.getFullYear();
-    const today = data.getDate();
-
-    const firstDay = new Date(year, month, 1);
-    const startingDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-    const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-    const days = [];
-
-    const formatDate = (day) => {
-        return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    };
-
-    // TODO formated date ???
-    // const convertDateFormat = (dateString) => {
-    //     const date = new Date(dateString);
-    //     const day = String(date.getDate()).padStart(2, '0');
-    //     const month = String(date.getMonth() + 1).padStart(2, '0');
-    //     const year = date.getFullYear();
-    //     return `${day}.${month}.${year}`;
-    // };
+    const [todosListDate, setTodosListDate] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
     useEffect(() => {
         dispatch(getTodos());
     }, [dispatch]);
+
+    const formatDate = (day) => {
+        return `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    };
 
     const isTaskScheduledForDay = (day) => {
         const formattedDate = formatDate(day);
@@ -45,23 +31,30 @@ const Calendar = () => {
 
     const handleDayClick = (day) => {
         const formattedDate = formatDate(day);
-        // TODO TASKLIST PER DAY
-        // const tasksForSelectedDay = todos.filter(todo => todo.date.slice(0, 10) === formattedDate);
-        // setSelectedDayTodos(tasksForSelectedDay);
         setTodosListVisible(true);
+        setTodosListDate(formattedDate);
     };
 
     const handleCloseTodoList = () => {
         setTodosListVisible(false);
     };
 
+    const totalDaysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+    const firstDay = new Date(selectedYear, selectedMonth, 1);
+    const startingDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+    const days = [];
+
     for (let i = 0; i < startingDay; i++) {
         days.push(<td key={`empty-${i}`} className="border h-16 text-center"></td>);
     }
 
     for (let day = 1; day <= totalDaysInMonth; day++) {
-        const isToday = day === today;
-        const dayOfWeek = new Date(year, month, day).getDay();
+        const isToday =
+            day === new Date().getDate() &&
+            selectedMonth === new Date().getMonth() &&
+            selectedYear === new Date().getFullYear();
+
+        const dayOfWeek = new Date(selectedYear, selectedMonth, day).getDay();
         const isWeekend = dayOfWeek === 0 || dayOfWeek === 6 ? 'bg-red-200' : '';
         const hasTask = isTaskScheduledForDay(day) ? 'relative' : '';
 
@@ -93,7 +86,21 @@ const Calendar = () => {
         );
     }
 
-    const monthName = data.toLocaleString(i18n.language, { month: 'long' });
+    // const monthOptions = Array.from({ length: 12 }, (_, index) => ({
+    //     value: index,
+    //     label: new Date(0, index).toLocaleString(i18n.language, { month: 'long' })
+    // }));
+
+    const monthOptions = Array.from({ length: 12 }, (_, index) => {
+        const monthName = new Date(0, index).toLocaleString(i18n.language, { month: 'long' });
+        return {
+            value: index,
+            label: monthName.charAt(0).toUpperCase() + monthName.slice(1), // Capitalize the first letter
+        };
+    });
+
+    const yearOptions = Array.from({ length: 21 }, (_, index) => selectedYear - 10 + index);
+
     const weekDays = [
         t('calendar.days.Mon'),
         t('calendar.days.Tue'),
@@ -106,10 +113,32 @@ const Calendar = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center px-3">
+            <LogoutButton />
             <div className="w-full max-w-4xl">
-                <h2 className="text-3xl text-center mb-4">
-                    {monthName} {year}
-                </h2>
+                <div className="flex justify-center items-center mb-4">
+                    <select
+                        className="border p-2 rounded bg-transparent"
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                    >
+                        {monthOptions.map(({ value, label }) => (
+                            <option key={value} value={value}>
+                                {label}
+                            </option>
+                        ))}
+                    </select>
+                    <select
+                        className="border p-2 rounded bg-transparent"
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(Number(e.target.value))}
+                    >
+                        {yearOptions.map((year) => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <table className="w-full table-fixed border-collapse">
                     <thead>
                     <tr className="bg-gray-200">
@@ -125,12 +154,10 @@ const Calendar = () => {
             </div>
 
             {todosListVisible && (
-                <TodoList onClose={handleCloseTodoList} />
-
-                // TODO SELECTED TASK DAY ???
-                // <TodoList todos={selectedDayTodos} onClose={handleCloseTodoList} />
-
+                <TodoList date={todosListDate} onClose={handleCloseTodoList} />
             )}
+
+            <Toaster />
         </div>
     );
 };
