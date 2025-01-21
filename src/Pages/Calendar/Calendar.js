@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import TodoList from '../../components/TodoList/TodoList';
-import { getTodos, selectTodos } from '../../redux/slice/todosSlice';
+import {getTodos, selectTodos} from '../../redux/slice/todosSlice';
 import LogoutButton from "../../components/LogoutButton/LogoutButton";
 import { Toaster } from "react-hot-toast";
 
@@ -10,16 +10,14 @@ const Calendar = () => {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
 
-    const todos = useSelector(selectTodos, shallowEqual);
+    const {todos, initLoaded} = useSelector(selectTodos, shallowEqual);
     const [todosListVisible, setTodosListVisible] = useState(false);
     const [todosListDate, setTodosListDate] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-
-    useEffect(() => {
-        dispatch(getTodos());
-    }, [dispatch]);
-
+        if (!initLoaded) {
+            dispatch(getTodos());
+        }
     const formatDate = (day) => {
         return `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     };
@@ -86,16 +84,11 @@ const Calendar = () => {
         );
     }
 
-    // const monthOptions = Array.from({ length: 12 }, (_, index) => ({
-    //     value: index,
-    //     label: new Date(0, index).toLocaleString(i18n.language, { month: 'long' })
-    // }));
-
     const monthOptions = Array.from({ length: 12 }, (_, index) => {
         const monthName = new Date(0, index).toLocaleString(i18n.language, { month: 'long' });
         return {
             value: index,
-            label: monthName.charAt(0).toUpperCase() + monthName.slice(1), // Capitalize the first letter
+            label: monthName.charAt(0).toUpperCase() + monthName.slice(1),
         };
     });
 

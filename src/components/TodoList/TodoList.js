@@ -7,13 +7,12 @@ import { selectTodos } from "../../redux/slice/todosSlice";
 import { Toaster } from "react-hot-toast";
 
 const TodoList = ({ onClose, date }) => {
-    const todos = useSelector(selectTodos, shallowEqual);
+    const {todos} = useSelector(selectTodos, shallowEqual);
     const { t } = useTranslation();
     const [isOpenTaskForm, setIsOpenTaskForm] = useState(false);
     const [filteredTodos, setFilteredTodos] = useState([]);
 
     useEffect(() => {
-        // Фільтруємо завдання за переданою датою
         const matchingTodos = todos.filter(todo => todo.date.slice(0, 10) === date);
         setFilteredTodos(matchingTodos);
     }, [todos, date]);
