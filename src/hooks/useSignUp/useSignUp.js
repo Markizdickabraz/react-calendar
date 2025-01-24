@@ -18,9 +18,36 @@ const useSignUp = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const validateFormData = (formdata) => {
+        console.log(formData)
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const nameRegex = /^[a-zA-Z\s\-]+$/;
+
+        if (!formData.firstName || !nameRegex.test(formData.firstName) || !formData.lastName || !nameRegex.test(formData.lastName)) {
+            console.error(
+                "Invalid name. Only letters, spaces, and hyphens are allowed."
+            );
+            return;
+        }
+
+
+        if (!formData.password || !passwordRegex.test(formData.password)) {
+            console.error("Invalid password. Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
+            return;
+        }
+
+        if (!formData.email || !emailRegex.test(formData.email)) {
+            console.error("Invalid name. Name must be a valid email address.");
+            return;
+        }
+
+        dispatch(signUp(formData));
+    }
+
     const handleSignUpSubmit = (e) => {
         e.preventDefault();
-        dispatch(signUp(formData));
+        validateFormData(formData);
     };
 
     return {

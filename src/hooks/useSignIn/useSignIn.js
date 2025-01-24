@@ -20,13 +20,30 @@ const useSignIn = () => {
     const todosError = useSelector(selectError);
 
     const handleChange = (e) => {
-
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const validateFormData = (formData) => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!formData.password || !passwordRegex.test(formData.password)) {
+            console.error("Invalid password. Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.");
+            return;
+        }
+
+        if (!formData.email || !emailRegex.test(formData.email)) {
+            console.error("Invalid name. Name must be a valid email address.");
+            return;
+        }
+
+        dispatch(signIn(formData));
+    };
+
+
     const handleSignInSubmit = (e) => {
         e.preventDefault();
-        dispatch(signIn(formData));
+        validateFormData(formData);
     };
 
     useEffect(() => {

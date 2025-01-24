@@ -141,7 +141,6 @@ const userSlice = createSlice({
             .addCase(logout.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload;
-                toast.error('Logout failed!');
             });
     },
 });
